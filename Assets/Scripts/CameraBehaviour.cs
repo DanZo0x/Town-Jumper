@@ -13,7 +13,7 @@ public class CameraBehaviour : MonoBehaviour
     void Update()
     {
         speedMultiplier += Time.deltaTime / 15;
-        speedMultiplier = Mathf.Clamp(speedMultiplier, 2, 5);
+        speedMultiplier = Mathf.Clamp(speedMultiplier, 3, 5);
 
         transform.position += new Vector3(1, 0, 0) * Time.deltaTime * 4 * speedMultiplier / slowDownFactor * progressiveSpeedMultiplier;
     }

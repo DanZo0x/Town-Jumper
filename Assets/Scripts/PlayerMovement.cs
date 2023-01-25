@@ -12,7 +12,10 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private Collision coll;
     [SerializeField] private BoxCollider2D player;
+    [SerializeField] private Animator anim;
+    [SerializeField] private PlayerInput playinp;
 
+    [Space]
     [Header("Checks")]
     [SerializeField] private bool canMove = true;
     [SerializeField] private bool canSlide = true;
@@ -33,6 +36,8 @@ public class PlayerMovement : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         coll = GetComponent<Collision>();
         player = GetComponent<BoxCollider2D>();
+        anim = GetComponent<Animator>();
+        playinp = GetComponent<PlayerInput>();
     }
 
     void Update()
@@ -49,7 +54,7 @@ public class PlayerMovement : MonoBehaviour
         if (canMove)
         {
             speedMultiplier += Time.deltaTime / 15 ;
-            speedMultiplier = Mathf.Clamp(speedMultiplier, 2, 5);
+            speedMultiplier = Mathf.Clamp(speedMultiplier, 3, 5);
 
             transform.position += new Vector3 (1, 0, 0) * Time.deltaTime * 4 * speedMultiplier / slowDownFactor * progressiveSpeedMultiplier;
         }
@@ -72,13 +77,15 @@ public class PlayerMovement : MonoBehaviour
     private void SlideDown()
     {
         player.size = new Vector3(1, 1, 1);
-        player.offset = new Vector3(0, 0, 0);
+        player.offset = new Vector3(0, -0.5f, 0);
+        anim.SetBool("isCrouching", true);
     }
 
     private void SlideUp()
     {
         player.size = new Vector3(1, 2, 1);
-        player.offset = new Vector3(0, 0.5f, 0);
+        player.offset = new Vector3(0, 0, 0);
+        anim.SetBool("isCrouching", false);
     }
 
     IEnumerator Slide()

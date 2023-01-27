@@ -54,7 +54,7 @@ public class PlayerMovement : MonoBehaviour
         if (canMove)
         {
             speedMultiplier += Time.deltaTime / 15 ;
-            speedMultiplier = Mathf.Clamp(speedMultiplier, 3, 5);
+            speedMultiplier = Mathf.Clamp(speedMultiplier, 3, 4);
 
             transform.position += new Vector3 (1, 0, 0) * Time.deltaTime * 4 * speedMultiplier / slowDownFactor * progressiveSpeedMultiplier;
         }
@@ -66,16 +66,37 @@ public class PlayerMovement : MonoBehaviour
         rb.velocity += dir * jumpForce;
     }
 
+    private void GroundPlayer(Vector2 dir)
+    {
+        rb.velocity = new Vector2(-rb.velocity.x, 0);
+        rb.velocity += dir * jumpForce;
+    }
+
+    public void OnJump(InputAction.CallbackContext context)
+    {
+        if (context.performed && !isJumping)
+        {
+            SlideUp();
+            Jump(Vector2.up);
+        }
+    }
+
     public void OnSlide(InputAction.CallbackContext context)
     {
         if (context.performed && !isJumping && canSlide)
         {
             StartCoroutine(Slide());
         }
+        else if (context.performed && isJumping && canSlide)
+        {
+            GroundPlayer(Vector2.down);
+            StartCoroutine(Slide());
+        }
     }
 
     private void SlideDown()
     {
+        canSlide = false;
         player.size = new Vector3(1, 1, 1);
         player.offset = new Vector3(0, -0.5f, 0);
         anim.SetBool("isCrouching", true);
@@ -83,6 +104,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void SlideUp()
     {
+        canSlide = true;
         player.size = new Vector3(1, 2, 1);
         player.offset = new Vector3(0, 0, 0);
         anim.SetBool("isCrouching", false);
@@ -90,18 +112,8 @@ public class PlayerMovement : MonoBehaviour
 
     IEnumerator Slide()
     {
-        canSlide = false;
         SlideDown();
         yield return new WaitForSeconds(1f);
         SlideUp();
-        canSlide = true;
-    }
-
-    public void OnJump(InputAction.CallbackContext context)
-    {
-        if (context.performed && !isJumping)
-        {
-            Jump(Vector2.up);
-        }
     }
 }

@@ -9,6 +9,7 @@ public class PauseTemp : MonoBehaviour
     [SerializeField] private Canvas pauseCanvas;
 
     [SerializeField] private bool isGamePaused = false;
+    public bool gamePaused = false;
 
     private void OnEnable()
     {
@@ -33,11 +34,13 @@ public class PauseTemp : MonoBehaviour
         {
             Time.timeScale = 0;
             pauseCanvas.enabled = true;
+            gamePaused = true;
         }
         else
         {
             Time.timeScale = 1;
             pauseCanvas.enabled = false;
+            gamePaused = false;
         }
     }
 }

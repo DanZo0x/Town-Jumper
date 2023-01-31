@@ -24,12 +24,23 @@ public class PlayerMovement : MonoBehaviour
     [Space]
     [Header("Jump")]
     [SerializeField] private float jumpForce;
+    [SerializeField] private float coyoteJump;
+    [SerializeField] private float coyoteJumpTime;
+    [SerializeField] private float jumpBuffer;
+    [SerializeField] private float jumpBufferTime;
 
     [Space]
     [Header("Forward Movement")]
     [SerializeField] private float speedMultiplier = 1;
     [SerializeField] private float progressiveSpeedMultiplier = 1;
     [SerializeField] private float slowDownFactor = 1;
+
+    [Space]
+    [Header("QTE Checks")]
+    public bool qteUpPressed;
+    public bool qteDownPressed;
+    public bool qteLeftPressed;
+    public bool qteRightPressed;
 
     void Awake()
     {
@@ -53,7 +64,7 @@ public class PlayerMovement : MonoBehaviour
 
         if (canMove)
         {
-            speedMultiplier += Time.deltaTime / 15 ;
+            speedMultiplier += Time.deltaTime / 20 ;
             speedMultiplier = Mathf.Clamp(speedMultiplier, 3, 4);
 
             transform.position += new Vector3 (1, 0, 0) * Time.deltaTime * 4 * speedMultiplier / slowDownFactor * progressiveSpeedMultiplier;
@@ -115,5 +126,41 @@ public class PlayerMovement : MonoBehaviour
         SlideDown();
         yield return new WaitForSeconds(1f);
         SlideUp();
+    }
+
+    public void OnQteUp(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            qteUpPressed = true;
+            Debug.Log("QTE Up pressed");
+        }
+    }
+
+    public void OnQteDown(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            qteDownPressed = true;
+            Debug.Log("QTE Down pressed");
+        }
+    }
+
+    public void OnQteLeft(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            qteLeftPressed = true;
+            Debug.Log("QTE Left pressed");
+        }
+    }
+
+    public void OnQteRight(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            qteRightPressed = true;
+            Debug.Log("QTE Right pressed");
+        }
     }
 }
